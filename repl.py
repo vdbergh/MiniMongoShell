@@ -36,6 +36,7 @@ exit
 
 
 def repl():
+    print(banner)
     state = "db"
     current_db = None
     readline.set_completer(lambda x, y: complete(x, y, ls()))
@@ -188,16 +189,13 @@ def complete(text, state, words):
 
 
 if __name__ == "__main__":
-
     readline.parse_and_bind("tab: complete")
     histfile = os.path.expanduser("~/.mongo_shell_history")
-    print(banner)
     try:
         readline.read_history_file(histfile)
         h_len = readline.get_current_history_length()
     except FileNotFoundError:
         open(histfile, "wb").close()
         h_len = 0
-
     atexit.register(save_history, h_len, histfile)
     repl()

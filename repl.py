@@ -43,13 +43,13 @@ def repl():
     while True:
         prompt = "{}> ".format(current_db) if state != "db" else "mms> "
         ans = input(prompt)
+        if len(ans) == 0:
+            continue
         ans_copy = ans
         if ans[0] == "!":
             os.system(ans[1:])
             continue
         ans = ans.split()
-        if len(ans) == 0:
-            continue
         if ans[0] == "help":
             if len(ans) != 1:
                 print("Illegal command")

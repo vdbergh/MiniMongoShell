@@ -16,7 +16,7 @@ from mms import (
 )
 
 banner = """
-Welcome by MiniMongoShell.
+Welcome to MiniMongoShell.
 Type 'help' for help.
 """
 help = """

@@ -24,9 +24,8 @@ Commands
 ========
 
 !<shell_command>
-cd <db>
-cd ..
-ls
+cd [<db>]
+ls [<db>]
 rm <db|collection>
 cp <src> <dst>
 mv <src> <dst>
@@ -62,19 +61,25 @@ def repl():
                 continue
             break
         if ans[0] == "ls":
-            if len(ans) != 1:
+            if len(ans) not in [1, 2]:
                 print("Illegal command")
                 continue
             if state == "db":
-                print(ls())
+                if len(ans)==1:
+                    print(ls())
+                else:
+                    print(ls_db(ans[1]))
             else:
+                if len(ans) != 1:
+                    print("Illegal command")
+                    continue
                 print(ls_db(current_db))
             continue
         if ans[0] == "cd":
-            if len(ans) != 2:
+            if len(ans) not in [1, 2]:
                 print("Illegal command")
                 continue
-            if ans[1] == "..":
+            if len(ans) == 1:
                 readline.set_completer(lambda x, y: complete(x, y, ls()))
                 state = "db"
                 continue

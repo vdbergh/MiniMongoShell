@@ -121,7 +121,6 @@ def cat_collection(db, col, stream=sys.stdout):
         try:
             pp.pprint(doc)
         except BrokenPipeError as e:
-            print("BrokenPipeError", e)
             break
     ret.close()
     client.close()

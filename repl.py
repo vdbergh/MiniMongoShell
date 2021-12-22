@@ -43,12 +43,18 @@ def repl():
     readline.set_completer(lambda x, y: complete(x, y, cmd, ls()))
     while True:
         prompt = "{}> ".format(current_db) if state != "db" else "mms> "
-        ans = input(prompt)
+        try:
+            ans = input(prompt)
+        except EOFError:
+            break
         if len(ans) == 0:
             continue
         ans_copy = ans
         if ans[0] == "!":
-            os.system(ans[1:])
+            if ans[1:].strip()=="":
+                os.system("/bin/sh")
+            else:
+                os.system(ans[1:])
             continue
         ans = ans.split()
         if ans[0] == "help":

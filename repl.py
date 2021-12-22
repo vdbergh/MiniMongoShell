@@ -46,7 +46,7 @@ def repl():
         try:
             ans = input(prompt)
         except (EOFError, KeyboardInterrupt):
-            print("\nBye!")
+            print("")
             break
         if len(ans) == 0:
             continue

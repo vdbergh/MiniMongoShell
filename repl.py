@@ -75,14 +75,19 @@ def repl():
                 continue
             if state == "db":
                 if len(ans) == 1:
-                    print(ls())
+                    ret = ls(long=True)
+                    for r in ret:
+                        print("{:20s}{:10.0f}".format(r["name"], r["sizeOnDisk"]))
+                    continue
                 else:
-                    print(ls_db(ans[1]))
+                    ret = ls_db(ans[1], long=True)
             else:
                 if len(ans) != 1:
                     print("Illegal command")
                     continue
-                print(ls_db(current_db))
+                ret = ls_db(current_db, long=True)
+            for r in ret:
+                print("{:20s}{:10.0f}".format(r["name"], r["size"]))
             continue
         if ans[0] == "cd":
             if len(ans) not in [1, 2]:

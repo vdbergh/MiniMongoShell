@@ -24,21 +24,29 @@ class pager(object):
         self.p.communicate()
 
 
-def ls():
+def ls(long=False):
     client = pymongo.MongoClient()
-    ret = client.list_database_names()
+    if not long:
+        ret = sorted(client.list_database_names())
+    else:
+        ret = sorted(list(client.list_databases()), key=lambda x: x["name"])
     client.close()
-    return sorted(ret)
+    return ret
 
 
-def ls_db(db):
+def ls_db(db, long=False):
     if db not in ls():
         raise MongoException("db '{}' does not exist".format(db))
     client = pymongo.MongoClient()
     db = client[db]
-    ret = db.list_collection_names()
+    if not long:
+        ret = sorted(db.list_collection_names())
+    else:
+        ret = sorted(list(db.list_collections()), key=lambda x: x["name"])
+        for r in ret:
+            r["size"] = db[r["name"]].count_documents({})
     client.close()
-    return sorted(ret)
+    return ret
 
 
 def cp_db(src, dst, force=False):

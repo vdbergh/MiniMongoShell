@@ -9,7 +9,7 @@ class MongoException(Exception):
 class pager(object):
     def __init__(self):
         self.p = subprocess.Popen(
-            ["less"],
+            ["less", "-X"],
             universal_newlines=True,
             stdin=subprocess.PIPE,
         )

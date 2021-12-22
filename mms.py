@@ -6,6 +6,24 @@ class MongoException(Exception):
     pass
 
 
+class pager(object):
+    def __init__(self):
+        self.p = subprocess.Popen(
+            ["less"],
+            universal_newlines=True,
+            stdin=subprocess.PIPE,
+        )
+        self.stdout_orig = sys.stdout
+        sys.stdout = self.p.stdin
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, type, value, traceback):
+        sys.stdout = self.stdout_orig
+        self.p.communicate()
+
+
 def ls():
     client = pymongo.MongoClient()
     ret = client.list_database_names()
@@ -109,7 +127,9 @@ def mv_collection(db, src, dst, force=False):
     rm_collection(db, src)
 
 
-def cat_collection(db, col, stream=sys.stdout):
+def cat_collection(db, col, stream=None):
+    if stream is None:
+        stream = sys.stdout
     if db not in ls():
         raise MongoException("db '{}' does not exist".format(db))
     if col not in ls_db(db):
@@ -131,12 +151,6 @@ def less_collection(db, col):
         raise MongoException("db '{}' does not exist".format(db))
     if col not in ls_db(db):
         raise MongoException("collection '{}.{}' does not exist".format(db, col))
-    try:
-        p = subprocess.Popen(
-            ["less"],
-            universal_newlines=True,
-            stdin=subprocess.PIPE,
-        )
-        cat_collection(db, col, stream=p.stdin)
-    finally:
-        p.communicate()
+
+    with pager() as s:
+        cat_collection(db, col)

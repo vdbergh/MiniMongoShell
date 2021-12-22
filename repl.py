@@ -37,7 +37,7 @@ exit
 
 def repl():
     print(banner)
-    cmd=["cd","ls","rm","cp","mv","cat","less","exit"]
+    cmd = ["cd", "ls", "rm", "cp", "mv", "cat", "less", "exit"]
     state = "db"
     current_db = None
     readline.set_completer(lambda x, y: complete(x, y, cmd, ls()))
@@ -51,7 +51,7 @@ def repl():
             continue
         ans_copy = ans
         if ans[0] == "!":
-            if ans[1:].strip()=="":
+            if ans[1:].strip() == "":
                 os.system("/bin/sh")
             else:
                 os.system(ans[1:])
@@ -73,7 +73,7 @@ def repl():
                 print("Illegal command")
                 continue
             if state == "db":
-                if len(ans)==1:
+                if len(ans) == 1:
                     print(ls())
                 else:
                     print(ls_db(ans[1]))
@@ -193,7 +193,7 @@ def save_history(prev_h_len, histfile):
 def complete(text, state, cmd, words):
     if " " not in readline.get_line_buffer():
         words = cmd
-    results = [x+" " for x in words if x.startswith(text)] + [None]
+    results = [x + " " for x in words if x.startswith(text)] + [None]
     return results[state]
 
 

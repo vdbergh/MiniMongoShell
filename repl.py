@@ -45,7 +45,8 @@ def repl():
         prompt = "{}> ".format(current_db) if state != "db" else "mms> "
         try:
             ans = input(prompt)
-        except EOFError:
+        except (EOFError, KeyboardInterrupt):
+            print("\nBye!")
             break
         if len(ans) == 0:
             continue

@@ -37,9 +37,10 @@ exit
 
 def repl():
     print(banner)
+    cmd=["cd","ls","rm","cp","mv","cat","less","exit"]
     state = "db"
     current_db = None
-    readline.set_completer(lambda x, y: complete(x, y, ls()))
+    readline.set_completer(lambda x, y: complete(x, y, cmd, ls()))
     while True:
         prompt = "{}> ".format(current_db) if state != "db" else "mms> "
         ans = input(prompt)
@@ -81,7 +82,7 @@ def repl():
                 print("Illegal command")
                 continue
             if len(ans) == 1:
-                readline.set_completer(lambda x, y: complete(x, y, ls()))
+                readline.set_completer(lambda x, y: complete(x, y, cmd, ls()))
                 state = "db"
                 continue
             elif ans[1] not in ls():
@@ -89,7 +90,7 @@ def repl():
                 continue
             state = "col"
             current_db = ans[1]
-            readline.set_completer(lambda x, y: complete(x, y, ls_db(current_db)))
+            readline.set_completer(lambda x, y: complete(x, y, cmd, ls_db(current_db)))
             continue
         if ans[0] == "rm":
             if len(ans) != 2:
@@ -183,8 +184,10 @@ def save_history(prev_h_len, histfile):
     readline.append_history_file(new_h_len - prev_h_len, histfile)
 
 
-def complete(text, state, words):
-    results = [x for x in words if x.startswith(text)] + [None]
+def complete(text, state, cmd, words):
+    if " " not in readline.get_line_buffer():
+        words = cmd
+    results = [x+" " for x in words if x.startswith(text)] + [None]
     return results[state]
 
 

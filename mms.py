@@ -148,7 +148,7 @@ def cat_collection(db, col, stream=None):
     for doc in ret:
         try:
             pp.pprint(doc)
-        except BrokenPipeError as e:
+        except (BrokenPipeError, KeyboardInterrupt) as e:
             break
     ret.close()
     client.close()

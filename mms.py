@@ -7,17 +7,17 @@ class MongoException(Exception):
 
 
 class pager(object):
-    def __init__(self):
+    def __init__(self, pager=["less", "-X"]):
+        self.pager = pager
+
+    def __enter__(self):
         self.p = subprocess.Popen(
-            ["less", "-X"],
+            self.pager,
             universal_newlines=True,
             stdin=subprocess.PIPE,
         )
         self.stdout_orig = sys.stdout
         sys.stdout = self.p.stdin
-
-    def __enter__(self):
-        pass
 
     def __exit__(self, type, value, traceback):
         sys.stdout = self.stdout_orig
@@ -160,5 +160,5 @@ def less_collection(db, col):
     if col not in ls_db(db):
         raise MongoException("collection '{}.{}' does not exist".format(db, col))
 
-    with pager() as s:
+    with pager():
         cat_collection(db, col)

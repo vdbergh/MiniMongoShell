@@ -22,7 +22,8 @@ class pager(object):
     def __exit__(self, type, value, traceback):
         sys.stdout = self.stdout_orig
         self.p.communicate()
-
+        if type == BrokenPipeError:
+            return True
 
 def ls(long=False):
     client = pymongo.MongoClient()
@@ -148,7 +149,7 @@ def cat_collection(db, col, stream=None):
     for doc in ret:
         try:
             pp.pprint(doc)
-        except (BrokenPipeError, KeyboardInterrupt) as e:
+        except KeyboardInterrupt as e:
             break
     ret.close()
     client.close()

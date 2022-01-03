@@ -12,6 +12,7 @@ from mms import (
     mv_collection,
     cat_collection,
     less_collection,
+    indexes,
     MongoException,
 )
 
@@ -31,13 +32,14 @@ cp <src> <dst>
 mv <src> <dst>
 cat <collection> [ > <file> ]
 less <collection>
+indexes <collection>
 exit
 """
 
 
 def repl():
     print(banner)
-    cmd = ["cd", "ls", "rm", "cp", "mv", "cat", "less", "exit"]
+    cmd = ["cd", "ls", "rm", "cp", "mv", "cat", "less", "indexes", "exit"]
     state = "db"
     current_db = None
     readline.set_completer(lambda x, y: complete(x, y, cmd, ls()))
@@ -187,6 +189,31 @@ def repl():
                 except MongoException as e:
                     print(e)
                 continue
+        if ans[0] == "indexes":
+            if len(ans) != 2:
+                print("Illegal command")
+                continue
+            if state == "col":
+                try:
+                    for d in indexes(current_db, ans[1]):
+                        #                        print("==============",d)
+                        name_index = d["name"]
+                        print("{:30s}".format(name_index), end="")
+                        fields = d["key"]
+                        for field, order in fields.items():
+                            fields[field] = "asc" if order == 1 else "desc"
+                        print("{:30s}".format(str(fields.to_dict())), end="")
+                        filter = d.get("partialFilterExpression")
+                        if filter is not None:
+                            print("         {}".format(filter.to_dict()), end="")
+                        print("")
+                except MongoException as e:
+                    print(e)
+                continue
+            else:
+                print("Illegal command")
+                continue
+
         print("Illegal command")
 
 

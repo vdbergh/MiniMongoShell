@@ -162,3 +162,14 @@ def less_collection(db, col):
 
     with pager():
         cat_collection(db, col)
+
+
+def indexes(db, col):
+    if db not in ls():
+        raise MongoException("db '{}' does not exist".format(db))
+    if col not in ls_db(db):
+        raise MongoException("collection '{}.{}' does not exist".format(db, col))
+    client = pymongo.MongoClient()
+    ret = list(client[db][col].list_indexes())
+    client.close()
+    return ret
